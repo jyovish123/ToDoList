@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTodo List</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Verdana, sans-serif;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.7848389355742297) 0%, rgb(1, 155, 194) 100%);
+        }
+
+        .contanair {
+            /* width: 300px; */
+            padding: 50px;
+            /* border: 0.5px solid rgb(200, 200, 200); */
+            box-shadow: 0px 8px 15px 0.5px rgba(1, 155, 194, 0.646);
+
+
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 25px;
+            font-weight: 400;
+            font-family: Georgia, serif;
+
+        }
+
+        #entertodo {
+            display: flex;
+            align-items: center;
+        }
+
+        #entertodo input {
+            min-width: 250px;
+            padding: 15px;
+            border: 1px solid #2121215a;
+            /* text-align: center; */
+            border-radius: 4px;
+            background-color: transparent;
+        }
+
+        .addlist {
+            padding: 15px;
+            margin-left: 10px;
+            border: 1px solid #2121215a;
+            border-radius: 4px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contanair">
+        <h2>My ToDo List</h2>
+        <div id="entertodo">
+            <input type="text" placeholder="Enter Your Todo" value="" class="totValue">
+            <button class="addlist">+Add</button>
+        </div>
+        <div class="todolist"></div>
+    </div>
+
+    <script>
+        const todoList = document.querySelector(".todolist");
+        const listValue = document.querySelector(".totValue");
+        let todoListValue = [];
+        
+
+        const myNewValue = () => {
+            return JSON.parse(localStorage.getItem('myTodoList')) || [];
+        }
+
+        const addtodoListLocalStorage = (todo) => {
+            return localStorage.setItem('myTodoList', JSON.stringify(todo));
+        }
+
+        const showtodoList = ()=>{
+            todoListValue = myNewValue();
+            
+            todoListValue.forEach((curTodo)=>{
+                const liElement = document.createElement("li")
+                liElement.innerHTML = curTodo;
+                liElement.style.listStyleType = "number";
+                todoList.appendChild(liElement);
+                
+            })
+        }
+
+        const removetotList = (e)=>{
+            // console.log(e.target.textContent);
+            // console.log(todoListValue)
+            let currentTodo  = e.target;
+            updatedTodoList = todoListValue.filter((curTodoValue) => curTodoValue !== currentTodo.textContent);
+            addtodoListLocalStorage(updatedTodoList);
+            currentTodo.remove();
+        }
+
+        const addtodoList = () => {
+            todoListValue = myNewValue();
+            // console.log(todoListValue)
+            let newTodo = listValue.value.trim();
+            // console.log(newTodo)
+
+            listValue.value = "";
+
+            if (newTodo.length !== 0 && !todoListValue.includes(newTodo)) {
+                // console.log(typeof todoListValue);
+
+                todoListValue.push(newTodo);
+                // todoListValue = [... new Set(todoListValue)
+
+                addtodoListLocalStorage(todoListValue);
+
+                const liElement = document.createElement("li")
+                liElement.innerHTML = newTodo;
+                liElement.style.listStyleType = "number";
+                todoList.append(liElement);
+                liElement.style.cursor = "pointer";
+            }
+
+        }
+
+        showtodoList();
+
+
+        document.querySelector(".addlist").addEventListener("click", () => {
+            addtodoList();
+        })
+
+        todoList.addEventListener('click', (e)=>{
+            removetotList(e);
+        })
+    </script>
+</body>
+
+</html>
